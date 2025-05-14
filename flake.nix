@@ -56,7 +56,7 @@
                 echo "nvcc could not be found"
                 exit 1
             fi
-            if ! python -c "import torch; print(torch.cuda.is_available())"
+            if ! python -c "import torch; print('CUDA : ' + str(torch.cuda.is_available()))"
             then
                 echo "PyTorch CUDA is not available"
                 exit 1

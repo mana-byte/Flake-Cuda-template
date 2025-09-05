@@ -5,17 +5,21 @@ This flake is a template to enable cuda and pytorch with cuda enabled without ge
 
 ## What to do ?
 Run :
+
 ```
 $ sudo nix develop --accept-flake-config
 ```
+
 to download everything from the cachix cache (sudo is to trust the client specified "trusted-public-keys" in the flake).
 
-To reduce future build times when calling nix develop after nix-collect-garbage, you can also put all the outputs of the devshell in your cachix cache:
+To avoid long build times when calling `nix develop` after `nix-collect-garbage`, you can also put all the outputs of the devshell in your cachix cache:
 ```
 $ nix develop .#default --profile ./dev-profile --accept-flake-config
 $ cachix push mycache dev-profile # push to your cachix cache
 ```
-Don't forget to add:
+
+Don't forget to add to you flake:
+
 ```
   nixConfig = {
     extra-substituters = [
@@ -26,4 +30,5 @@ Don't forget to add:
     ];
   };
 ```
-Next time you run `sudo nix develop` or `nix develop`, it will download from your cachix cache instead of the public one.
+
+Next time you run `sudo nix develop` or `nix develop`, it will download from your cachix cache.

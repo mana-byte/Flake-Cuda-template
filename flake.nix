@@ -27,15 +27,14 @@
           inherit system;
           config = {
             allowUnfree = true;
-            cudaSupport = true;
           };
         };
         pythonWithPackages = pkgs.python312.withPackages (ps:
           with ps; [
             # example packages
-            torch
-            torchvision
-            torchaudio
+            torch-bin
+            torchvision-bin
+            torchaudio-bin
           ]);
       in {
         devShells.default = pkgs.mkShell {

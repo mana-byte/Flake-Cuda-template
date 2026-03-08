@@ -29,35 +29,41 @@
           inherit system;
           config = {
             allowUnfree = true;
+            # cudaSupport when set to true enables all pkgs that depend on its value to be built with cudaSupport.
+            # Packages such as torchWithCuda will be built with cudaSupport to true but it won't be the same for other packages that might need cudaSupport to true in your project.
             cudaSupport = true;
           };
         };
       in {
         devShells.default = pkgs.mkShell {
-          # Add python313 and torch for shellHook test
-          buildInputs = [
-            (pkgs.python313.withPackages (ps:
+          buildInputs = with pkgs; [
+            # Add pytorch for shellHook test
+            (python313.withPackages (ps:
               with ps; [
                 torch
               ]))
+
+            # cuda packages
+            (with cudaPackages; [
+              # cuda compiler
+              cuda_nvcc
+
+              ### Other cuda packages (https://search.nixos.org/packages?channel=unstable&query=cudaPackages)
+              ## GPU-accelerated library of primitives for deep neural networks
+              # cudnn
+              ## Library of primitives for image and signal processing
+              # libnpp
+            ])
           ];
 
           env = {
+            # Wrapper substituting the deprecated runfile-based CUDA installation
             CUDA_PATH = pkgs.cudaPackages.cudatoolkit;
           };
 
           shellHook = ''
             # Check cuda installation and pytorch cuda availability
-            if ! command -v nvcc &> /dev/null
-            then
-                echo "nvcc could not be found"
-                exit 1
-            fi
-            if ! python -c "import torch; print('CUDA : ' + str(torch.cuda.is_available()))"
-            then
-                echo "PyTorch CUDA is not available"
-                exit 1
-            fi
+            python -c "import torch; print('CUDA : ' + str(torch.cuda.is_available()))"
           '';
         };
       }

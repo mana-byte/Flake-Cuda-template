@@ -47,6 +47,8 @@
             (with cudaPackages; [
               # cuda compiler
               cuda_nvcc
+              # Wrapper substituting the deprecated runfile-based CUDA installation
+              cudatoolkit
 
               ### Other cuda packages (https://search.nixos.org/packages?channel=unstable&query=cudaPackages)
               ## GPU-accelerated library of primitives for deep neural networks
@@ -57,7 +59,6 @@
           ];
 
           env = {
-            # Wrapper substituting the deprecated runfile-based CUDA installation
             CUDA_PATH = pkgs.cudaPackages.cudatoolkit;
           };
 
